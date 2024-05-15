@@ -27,7 +27,6 @@ async function main() :Promise<void> {
     try {
         const result = await connectToCouchbase();
         cluster = result.cluster;
-
         await pingCluster();
         await queryCapella(n1qlQuery);
     } catch(err) {
