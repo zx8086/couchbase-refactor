@@ -53,6 +53,6 @@ export async function connectToCouchbase(): Promise<CouchbaseConnection> {
 
         console.error("Couchbase connection failed:", error);
 
-        throw error; // Re-throw the error after logging
+        throw error;
     }
 }
