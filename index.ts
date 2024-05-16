@@ -8,6 +8,32 @@ type DropIndexConfig = {
     indexName: string;
 };
 
+async function getIndexesToDrop(): Promise<DropIndexConfig[]> {
+    const query: string = `
+        SELECT 
+          (SELECT i_inner.name, i_inner.keyspace_id
+          FROM system:indexes AS i_inner
+          WHERE i_inner.metadata.last_scan_time IS NULL AND ANY v IN ["orders"] SATISFIES i_inner.keyspace_id LIKE "%" || v || "%" END) as indexes
+        FROM system:indexes AS i
+        WHERE i.metadata.last_scan_time IS NULL AND ANY v IN ["orders"] SATISFIES i.keyspace_id LIKE "%" || v || "%" END;
+    `;
+    let result: QueryResult = await cluster.query(query);
+    console.log("Indexes to drop...",result);
+
+    const dropIndexConfigs: DropIndexConfig[] = [];
+
+    for(let row of result.rows){
+        for(let indexInfo of row.indexes){
+            dropIndexConfigs.push({
+                bucketName: indexInfo.keyspace_id,
+                indexName: indexInfo.name
+            });
+        }
+    }
+
+    return dropIndexConfigs;
+}
+
 async function dropIndices(dropIndexConfigs: DropIndexConfig[]): Promise<void> {
     for (const config of dropIndexConfigs) {
         await dropIndex(config.bucketName, config.indexName);
@@ -53,11 +79,7 @@ async function main() :Promise<void> {
     try {
         const result = await connectToCouchbase();
         cluster = result.cluster;
-        const dropIndicesConfig: DropIndexConfig[] = [
-            { bucketName: 'catalog', indexName: 'idx-documentType"' },
-            { bucketName: 'catalog', indexName: 'idx-primary-presentations' },
-            { bucketName: 'catalog', indexName: 'idx-primary-catalog' },
-        ];
+        const dropIndicesConfig: DropIndexConfig[] = await getIndexesToDrop();
         await dropIndices(dropIndicesConfig);
     } catch (error: any) {
         console.log(error);
