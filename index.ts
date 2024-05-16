@@ -3,6 +3,17 @@ import type {Cluster, PingResult, QueryResult} from 'couchbase';
 
 let cluster: Cluster;
 
+type DropIndexConfig = {
+    bucketName: string;
+    indexName: string;
+};
+
+async function dropIndices(dropIndexConfigs: DropIndexConfig[]): Promise<void> {
+    for (const config of dropIndexConfigs) {
+        await dropIndex(config.bucketName, config.indexName);
+    }
+}
+
 async function pingCluster(): Promise<void> {
     try {
         const result: PingResult  = await cluster.ping();
@@ -42,9 +53,12 @@ async function main() :Promise<void> {
     try {
         const result = await connectToCouchbase();
         cluster = result.cluster;
-        await pingCluster();
-        await dropIndex('default', 'idx_priceFMS_salesOrganization_option');
-        await queryCapella(n1qlQuery);
+        const dropIndicesConfig: DropIndexConfig[] = [
+            { bucketName: 'catalog', indexName: 'idx-documentType"' },
+            { bucketName: 'catalog', indexName: 'idx-primary-presentations' },
+            { bucketName: 'catalog', indexName: 'idx-primary-catalog' },
+        ];
+        await dropIndices(dropIndicesConfig);
     } catch (error: any) {
         console.log(error);
         throw error;
