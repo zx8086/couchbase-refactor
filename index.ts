@@ -12,11 +12,26 @@ async function pingCluster(): Promise<void> {
     }
 }
 
+async function dropIndex(bucketName: string, indexName: string): Promise<void> {
+    try {
+        let queryIndex : string = `DROP INDEX \`${bucketName}\`.\`${indexName}\``;
+        let result: QueryResult = await cluster.query(queryIndex);
+        console.log(JSON.stringify(result, null, 2));
+        console.log(`Index ${indexName} dropped successfully`);
+    } catch (error: any) {
+        if (error.name === 'IndexNotFoundError') {
+            console.log(`Index ${indexName} does not exist, hence cannot be dropped.`);
+        } else {
+            console.error(`Error dropping index ${indexName}:`, error);
+        }
+    }
+}
+
 async function queryCapella(query: string): Promise<void> {
     try {
         let result: QueryResult = await cluster.query(query);
         console.log(JSON.stringify(result, null, 2));
-    } catch (error: unknown) {
+    } catch (error: any) {
         console.error('Query Error:', error);
     }
 }
@@ -28,9 +43,11 @@ async function main() :Promise<void> {
         const result = await connectToCouchbase();
         cluster = result.cluster;
         await pingCluster();
+        await dropIndex('default', 'idx_priceFMS_salesOrganization_option');
         await queryCapella(n1qlQuery);
-    } catch(err) {
-        console.error(err);
+    } catch (error: any) {
+        console.log(error);
+        throw error;
     } finally {
         console.log("Exiting...");
         process.exit(0);
