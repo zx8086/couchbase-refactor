@@ -1,15 +1,11 @@
 import { pingCluster } from './src/lib/clusterOperations.ts';
 import { queryCapella } from './src/lib/capellaQueries.ts';
 import { getIndexesToDrop, dropIndices } from './src/lib/indexOperations.ts';
+import type { DropIndexConfig } from './src/lib/interfaces.ts';
 import { n1qlQueryFatalRequests } from './src/queries/n1qlQueries.ts';
 
 let successfulDrops = 0;
 let failedDrops = 0;
-
-type DropIndexConfig = {
-    bucketName: string;
-    indexName: string;
-};
 
 async function main() :Promise<void> {
     try {
