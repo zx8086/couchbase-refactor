@@ -2,6 +2,16 @@
 
 This is to aid in refactoring Couchbase for the Cost Reduction plan - 30%
 
+This application does the following
+
+- Ping Cluster
+- Query for queries with Fatal Errors
+- Query for Longest Running Queries
+- Query for Most Frequent Running Queries
+- Query for Largest Result Size Queries
+- Query for Largest Result Count Queries
+- Query for Primary Index
+
 To install dependencies:
 
 ```bash
