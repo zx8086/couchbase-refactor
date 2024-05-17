@@ -2,7 +2,7 @@
 
 This is to aid in refactoring Couchbase for the Cost Reduction plan - 30%
 
-This application does the following
+This application does the following:-
 
 - Ping Cluster
 - Query for queries with Fatal Errors
