@@ -92,3 +92,10 @@ WHERE phaseCounts.\`primaryScan\` IS NOT MISSING
     AND UPPER(statement) NOT LIKE '% SYSTEM:%'
 ORDER BY resultCount DESC
 `;
+
+export const n1qlSystemIndexes: string = `
+SELECT
+(SELECT COUNT(*) FROM system:indexes) AS total_count,
+t.*
+FROM system:indexes t;
+`;
