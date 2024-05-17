@@ -56,3 +56,18 @@ GROUP BY statement
 LETTING queries = COUNT(1)
 ORDER BY queries DESC
 `;
+
+export const n1qlLargestResultSizeQueries: string = `
+SELECT statement,
+    (avgResultSize) AS avgResultSizeBytes,
+    (avgResultSize / 1000) AS avgResultSizeKB,
+    (avgResultSize / 1000 / 1000) AS avgResultSizeMB,
+    COUNT(1) AS queries
+FROM system:completed_requests
+WHERE UPPER(statement) NOT LIKE 'INFER %'
+    AND UPPER(statement) NOT LIKE 'CREATE INDEX%'
+    AND UPPER(statement) NOT LIKE '% SYSTEM:%'
+GROUP BY statement
+LETTING avgResultSize = AVG(resultSize)
+ORDER BY avgResultSize DESC
+`;
