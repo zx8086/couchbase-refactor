@@ -44,3 +44,15 @@ GROUP BY statement
 LETTING avgServiceTime = AVG(STR_TO_DURATION(serviceTime))
 ORDER BY avgServiceTime DESC
 `;
+
+export const n1qlMostFrequentQueries: string = `
+SELECT statement,
+    COUNT(1) AS queries
+FROM system:completed_requests
+WHERE UPPER(statement) NOT LIKE 'INFER %'
+    AND UPPER(statement) NOT LIKE 'CREATE INDEX%'
+    AND UPPER(statement) NOT LIKE '% SYSTEM:%'
+GROUP BY statement
+LETTING queries = COUNT(1)
+ORDER BY queries DESC
+`;
