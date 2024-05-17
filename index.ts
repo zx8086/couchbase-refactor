@@ -13,7 +13,7 @@ async function main() :Promise<void> {
         await pingCluster();
 
         console.log("Query fatal requests...");
-        await queryCapella(n1qlQueryFatalRequests, true, 'myQueryResults.txt');
+        await queryCapella(n1qlQueryFatalRequests, true, 'fatalRequestsResults.txt');
 
         console.log("Dropping Unused Indexes...");
         const dropIndicesConfig: DropIndexConfig[] = await getIndexesToDrop();
