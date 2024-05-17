@@ -2,7 +2,7 @@ import { pingCluster } from './src/lib/clusterOperations.ts';
 import { queryCapella } from './src/lib/capellaQueries.ts';
 import { getIndexesToDrop, dropIndices } from './src/lib/indexOperations.ts';
 import type { DropIndexConfig } from './src/lib/interfaces.ts';
-import { n1qlQueryFatalRequests, n1qlLongestRunningQueries } from './src/queries/n1qlQueries.ts';
+import { n1qlQueryFatalRequests, n1qlLongestRunningQueries, n1qlMostFrequentQueries } from './src/queries/n1qlQueries.ts';
 
 let successfulDrops = 0;
 let failedDrops = 0;
@@ -15,6 +15,7 @@ async function main() :Promise<void> {
         console.log("Query fatal requests...");
         await queryCapella(n1qlQueryFatalRequests, true, 'fatalRequestsResults.txt');
         await queryCapella(n1qlLongestRunningQueries, true, 'longestRunningQueries.txt');
+        await queryCapella(n1qlMostFrequentQueries, true, 'mostFrequentQueries.txt');
 
 
         console.log("Dropping Unused Indexes...");
