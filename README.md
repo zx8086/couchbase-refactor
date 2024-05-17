@@ -11,6 +11,7 @@ This application does the following:-
 - Query for Largest Result Size Queries
 - Query for Largest Result Count Queries
 - Query for Primary Index
+- Query for All Indexes
 
 To install dependencies:
 
