@@ -4,8 +4,8 @@ import { mkdir } from 'node:fs/promises';
 import path from 'path';
 
 export async function queryCapella(query: string, logToFile: boolean = false, fileName: string = 'results.txt'): Promise<void> {
-    const cluster = await getCluster();
     try {
+        const cluster = await getCluster();
         const result: QueryResult = await cluster.query(query);
         const jsonStringResult = JSON.stringify(result, null, 2);
         console.log(jsonStringResult);
