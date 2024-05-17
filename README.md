@@ -1,5 +1,7 @@
 # couchbase-refactor
 
+This is to aid in refactoring Couchbase for the Cost Reduction plan - 30%
+
 To install dependencies:
 
 ```bash
