@@ -1,7 +1,6 @@
-import { connectToCouchbase } from './src/lib/couchbaseConnector.ts';
-import type {Cluster, PingResult, QueryResult} from 'couchbase';
+import { getCluster } from './src/lib/clusterProvider.ts';
+import type {PingResult, QueryResult} from 'couchbase';
 
-let cluster: Cluster;
 let successfulDrops = 0;
 let failedDrops = 0;
 
@@ -11,6 +10,7 @@ type DropIndexConfig = {
 };
 
 async function getIndexesToDrop(): Promise<DropIndexConfig[]> {
+    const cluster = await getCluster();
     const query: string = `
         SELECT 
   (SELECT i_inner.name, i_inner.keyspace_id, i_inner.\`namespace\`, i_inner.namespace_id, i_inner.state
@@ -49,6 +49,7 @@ async function dropIndices(dropIndexConfigs: DropIndexConfig[]): Promise<void> {
 }
 
 async function pingCluster(): Promise<void> {
+    const cluster = await getCluster();
     try {
         const result: PingResult  = await cluster.ping();
         console.log(JSON.stringify(result, null, 2));
@@ -58,6 +59,7 @@ async function pingCluster(): Promise<void> {
 }
 
 async function dropIndex(bucketName: string, indexName: string): Promise<void> {
+    const cluster = await getCluster();
     try {
         let queryIndex : string = `DROP INDEX \`${bucketName}\`.\`${indexName}\``;
         console.log(queryIndex)
@@ -76,6 +78,7 @@ async function dropIndex(bucketName: string, indexName: string): Promise<void> {
 }
 
 async function queryCapella(query: string): Promise<void> {
+    const cluster = await getCluster();
     try {
         let result: QueryResult = await cluster.query(query);
         console.log(JSON.stringify(result, null, 2));
@@ -119,9 +122,6 @@ const n1qlQueryFatalRequests: string = `
 `;
 async function main() :Promise<void> {
     try {
-        const result = await connectToCouchbase();
-        cluster = result.cluster;
-
         console.log("Pinging cluster...");
         await pingCluster();
 
