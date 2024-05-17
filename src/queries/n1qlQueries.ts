@@ -71,3 +71,16 @@ GROUP BY statement
 LETTING avgResultSize = AVG(resultSize)
 ORDER BY avgResultSize DESC
 `;
+
+export const n1qlLargestResultCountQueries: string = `
+SELECT statement,
+    avgResultCount,
+    COUNT(1) AS queries
+FROM system:completed_requests
+WHERE UPPER(statement) NOT LIKE 'INFER %'
+    AND UPPER(statement) NOT LIKE 'CREATE INDEX%'
+    AND UPPER(statement) NOT LIKE '% SYSTEM:%'
+GROUP BY statement
+LETTING avgResultCount = AVG(resultCount)
+ORDER BY avgResultCount DESC
+`;
