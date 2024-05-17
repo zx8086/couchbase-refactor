@@ -43,6 +43,7 @@ const n1qlQueryFatalRequests: string = `
         totalErrorCount
     FROM total_error_count;
 `;
+
 async function main() :Promise<void> {
     try {
         console.log("Pinging cluster...");
@@ -51,8 +52,10 @@ async function main() :Promise<void> {
         console.log("Query fatal requests...");
         await queryCapella(n1qlQueryFatalRequests);
 
+        console.log("Dropping Unused Indexes...");
         const dropIndicesConfig: DropIndexConfig[] = await getIndexesToDrop();
         await dropIndices(dropIndicesConfig);
+
     } finally {
         console.log(`Successful Index Deletions: ${successfulDrops}`);
         console.log(`Failed Index Deletions: ${failedDrops}`);
