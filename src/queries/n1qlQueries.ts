@@ -84,3 +84,11 @@ GROUP BY statement
 LETTING avgResultCount = AVG(resultCount)
 ORDER BY avgResultCount DESC
 `;
+
+export const n1qlPrimaryIndexes: string = `
+SELECT *
+FROM system:completed_requests
+WHERE phaseCounts.\`primaryScan\` IS NOT MISSING
+    AND UPPER(statement) NOT LIKE '% SYSTEM:%'
+ORDER BY resultCount DESC
+`;
