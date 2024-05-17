@@ -15,10 +15,10 @@ async function getIndexesToDrop(): Promise<DropIndexConfig[]> {
         SELECT 
   (SELECT i_inner.name, i_inner.keyspace_id, i_inner.\`namespace\`, i_inner.namespace_id, i_inner.state
   FROM system:indexes AS i_inner
-  WHERE i_inner.metadata.last_scan_time IS NULL AND ANY v IN ["travel-sample"] SATISFIES i_inner.keyspace_id LIKE v || "%" END) as last_scan_null,
+  WHERE i_inner.metadata.last_scan_time IS NULL AND ANY v IN ["catalog"] SATISFIES i_inner.keyspace_id LIKE v || "%" END) as last_scan_null,
   COUNT(*) AS total
 FROM system:indexes AS i
-WHERE i.metadata.last_scan_time IS NULL AND ANY v IN ["travel-sample"] SATISFIES i.keyspace_id LIKE v || "%" END;
+WHERE i.metadata.last_scan_time IS NULL AND ANY v IN ["catalog"] SATISFIES i.keyspace_id LIKE v || "%" END;
     `;
     let result: QueryResult = await cluster.query(query);
     console.log(JSON.stringify(result, null, 2));
@@ -84,12 +84,50 @@ async function queryCapella(query: string): Promise<void> {
     }
 }
 
-const n1qlQuery : any = 'SELECT ARRAY_AGG({"orderId": d.orderId, "reference": d.reference, "documentType": d.documentType, "brand": d.brand, "salesOrganizationCode": d.salesOrganizationCode, "masterSalesOrganizationCode": d.masterSalesOrganizationCode}) AS orders, COUNT(*) AS total_count FROM `orders`.`_default`.`_default` AS d';
-
+const n1qlQueryFatalRequests: string = `
+    WITH fatal_requests AS (
+    SELECT
+        requestId,
+        resultSize,
+        statement,
+        phaseTimes,
+        errors,
+        requestTime,
+        userAgent,
+        users
+    FROM system:completed_requests
+    WHERE state = "fatal"
+        AND requestTime >= DATE_ADD_STR(NOW_STR(), -24, 'hour')
+    ), 
+    total_error_count AS (
+    SELECT COUNT(*) AS totalErrorCount FROM fatal_requests
+    )
+    SELECT
+        requestId,
+        resultSize,
+        statement,
+        phaseTimes,
+        errors,
+        requestTime,
+        userAgent,
+        users
+    FROM fatal_requests
+    UNION ALL
+    SELECT
+        totalErrorCount
+    FROM total_error_count;
+`;
 async function main() :Promise<void> {
     try {
         const result = await connectToCouchbase();
         cluster = result.cluster;
+
+        console.log("Pinging cluster...");
+        await pingCluster();
+
+        console.log("Query fatal requests...");
+        await queryCapella(n1qlQueryFatalRequests);
+
         const dropIndicesConfig: DropIndexConfig[] = await getIndexesToDrop();
         await dropIndices(dropIndicesConfig);
     } finally {
