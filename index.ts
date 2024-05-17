@@ -1,5 +1,6 @@
 import { getCluster } from './src/lib/clusterProvider.ts';
 import { pingCluster } from './src/lib/clusterOperations.ts';
+import { queryCapella } from './src/lib/capellaQueries.ts';
 import type {QueryResult} from 'couchbase';
 
 let successfulDrops = 0;
@@ -65,16 +66,6 @@ async function dropIndex(bucketName: string, indexName: string): Promise<void> {
             console.error(`Error dropping index ${indexName}:`, error);
         }
         failedDrops++; // increment failed drops by 1
-    }
-}
-
-async function queryCapella(query: string): Promise<void> {
-    const cluster = await getCluster();
-    try {
-        let result: QueryResult = await cluster.query(query);
-        console.log(JSON.stringify(result, null, 2));
-    } catch (error: any) {
-        console.error('Query Error:', error);
     }
 }
 
