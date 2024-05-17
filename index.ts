@@ -75,7 +75,6 @@ async function dropIndex(bucketName: string, indexName: string): Promise<void> {
     }
 }
 
-
 async function queryCapella(query: string): Promise<void> {
     try {
         let result: QueryResult = await cluster.query(query);
