@@ -1,5 +1,6 @@
 import { getCluster } from './src/lib/clusterProvider.ts';
-import type {PingResult, QueryResult} from 'couchbase';
+import { pingCluster } from './src/lib/clusterOperations.ts';
+import type {QueryResult} from 'couchbase';
 
 let successfulDrops = 0;
 let failedDrops = 0;
@@ -45,16 +46,6 @@ async function dropIndices(dropIndexConfigs: DropIndexConfig[]): Promise<void> {
     for (const config of dropIndexConfigs) {
         console.log(`Dropping index: ${config.indexName} of bucket: ${config.bucketName}`);
         await dropIndex(config.bucketName, config.indexName);
-    }
-}
-
-async function pingCluster(): Promise<void> {
-    const cluster = await getCluster();
-    try {
-        const result: PingResult  = await cluster.ping();
-        console.log(JSON.stringify(result, null, 2));
-    } catch (error: unknown) {
-        console.error("Error pinging the cluster:", error);
     }
 }
 
