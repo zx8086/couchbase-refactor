@@ -11,7 +11,7 @@ export const n1qlQueryFatalRequests: string = `
         users
     FROM system:completed_requests
     WHERE state = "fatal"
-        AND requestTime >= DATE_ADD_STR(NOW_STR(), -24, 'hour')
+        AND requestTime >= DATE_ADD_STR(NOW_STR(), -336, 'hour')
     ), 
     total_error_count AS (
     SELECT COUNT(*) AS totalErrorCount FROM fatal_requests
