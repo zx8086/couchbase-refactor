@@ -105,3 +105,7 @@ SELECT *, meta().plan FROM system:completed_requests
 WHERE requestTime >= DATE_ADD_STR(NOW_STR(), -168, 'hour')
 ORDER BY elapsedTime DESC
 `;
+
+export const n1qlPreparedStatements: string = `
+SELECT * FROM system:prepareds;
+`;
