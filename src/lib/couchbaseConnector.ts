@@ -25,7 +25,7 @@ export async function connectToCouchbase(): Promise<CouchbaseConnection> {
         const scopeName: string = config.couchbase.SCOPE;
         const collectionName: string = config.couchbase.COLLECTION;
 
-        console.log(`Configuring connection with the following details:
+        console.log(`Configuring connection with the following default connection details:
                     URL: ${clusterConnStr}, 
                     Username: ${username}, 
                     Bucket: ${bucketName}, 
@@ -40,19 +40,16 @@ export async function connectToCouchbase(): Promise<CouchbaseConnection> {
         console.log("Cluster connection established.");
 
         const bucket: Bucket = cluster.bucket(bucketName);
-
         console.log(`Bucket ${bucketName} accessed.`);
 
         const scope :Scope = bucket.scope(scopeName);
         const collection: Collection = scope.collection(collectionName);
-
         console.log(`Collection ${collectionName} accessed under scope ${scopeName}.`);
 
         return { cluster, bucket, scope, collection, connect: couchbaseConnect };
     } catch (error) {
 
         console.error("Couchbase connection failed:", error);
-
         throw error;
     }
 }

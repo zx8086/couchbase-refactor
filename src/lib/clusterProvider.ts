@@ -1,14 +1,13 @@
 // clusterProvider.ts
 import type { Cluster } from 'couchbase';
-import { connectToCouchbase } from './couchbaseConnector.ts';
+import {connectToCouchbase, type CouchbaseConnection} from './couchbaseConnector.ts';
 
 let cluster: Cluster | null = null;
 
-export const getCluster = async () => {
+export const getCluster = async () :Promise<Cluster> => {
     if (!cluster) {
-        const result = await connectToCouchbase();
+        const result: CouchbaseConnection = await connectToCouchbase();
         cluster = result.cluster;
     }
-
     return cluster;
-}
+};
