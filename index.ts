@@ -9,6 +9,9 @@ let failedDrops = 0;
 
 async function main() :Promise<void> {
     try {
+
+        console.log("\nBun Version",Bun.version);
+
         console.log("\nPinging cluster...");
         await pingCluster();
 
