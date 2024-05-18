@@ -2,7 +2,7 @@ import { pingCluster } from './src/lib/clusterOperations.ts';
 import { queryCapella } from './src/lib/capellaQueries.ts';
 import { getIndexesToDrop, dropIndices } from './src/lib/indexOperations.ts';
 import type { DropIndexConfig } from './src/lib/interfaces.ts';
-import { n1qlQueryFatalRequests, n1qlLongestRunningQueries, n1qlMostFrequentQueries, n1qlLargestResultSizeQueries, n1qlLargestResultCountQueries, n1qlPrimaryIndexes, n1qlSystemIndexes, n1qlCompletedRequestsLastWeek, n1qlPreparedStatements } from './src/queries/n1qlQueries.ts';
+import { n1qlQueryFatalRequests, n1qlLongestRunningQueries, n1qlMostFrequentQueries, n1qlLargestResultSizeQueries, n1qlLargestResultCountQueries, n1qlPrimaryIndexes, n1qlSystemIndexes, n1qlCompletedRequests, n1qlPreparedStatements } from './src/queries/n1qlQueries.ts';
 
 let successfulDrops = 0;
 let failedDrops = 0;
@@ -15,8 +15,8 @@ async function main() :Promise<void> {
         console.log("\nPinging cluster...");
         await pingCluster();
 
-        console.log("\nQuery Completed Request in Last Week...");
-        await queryCapella(n1qlCompletedRequestsLastWeek, true, 'completedRequestsLastWeek.txt');
+        console.log("\nQuery Completed Request...");
+        await queryCapella(n1qlCompletedRequests, true, 'completedRequests.txt');
 
         console.log("\nQuery Prepared Statements...");
         await queryCapella(n1qlPreparedStatements, true, 'preparedStatements.txt');
