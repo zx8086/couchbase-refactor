@@ -1,13 +1,14 @@
-import type { QueryResult } from 'couchbase';
+import type {Cluster, QueryResult} from 'couchbase';
 import { getCluster } from './clusterProvider.ts';
 import type { DropIndexConfig } from "./interfaces.ts";
 import { n1qlIndexesToDrop } from './../queries/n1qlQueries.ts';
 
-let successfulDrops = 0;
-let failedDrops = 0;
+let successfulDrops: number = 0;
+let failedDrops: number = 0;
 
 export async function getIndexesToDrop(): Promise<DropIndexConfig[]> {
-    const cluster = await getCluster();
+    const cluster: Cluster = await getCluster();
+
     console.log("\nSelect Index To Drop Index...");
     let result: QueryResult = await cluster.query(n1qlIndexesToDrop);
     console.log(JSON.stringify(result, null, 2));
@@ -26,7 +27,6 @@ export async function getIndexesToDrop(): Promise<DropIndexConfig[]> {
             console.log('No indexes to drop for this row');
         }
     }
-
     return dropIndexConfigs;
 }
 
@@ -38,20 +38,20 @@ export async function dropIndices(dropIndexConfigs: DropIndexConfig[]): Promise<
 }
 
 async function dropIndex(bucketName: string, indexName: string): Promise<void> {
-    const cluster = await getCluster();
+    const cluster: Cluster = await getCluster();
     try {
         let queryIndex : string = `DROP INDEX \`${bucketName}\`.\`${indexName}\``;
         console.log(queryIndex)
         let result: QueryResult = await cluster.query(queryIndex);
         console.log(JSON.stringify(result, null, 2));
         console.log(`Index ${indexName} dropped successfully`);
-        successfulDrops++; // increment successful drops by 1
+        successfulDrops++;
     } catch (error: any) {
         if (error.name === 'IndexNotFoundError') {
             console.log(`Index ${indexName} does not exist, hence cannot be dropped.`);
         } else {
             console.error(`Error dropping index ${indexName}:`, error);
         }
-        failedDrops++; // increment failed drops by 1
+        failedDrops++;
     }
 }
