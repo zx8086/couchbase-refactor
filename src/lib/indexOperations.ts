@@ -1,26 +1,15 @@
 import type { QueryResult } from 'couchbase';
 import { getCluster } from './clusterProvider.ts';
+import type { DropIndexConfig } from "./interfaces.ts";
+import { n1qlIndexesToDrop } from './../queries/n1qlQueries.ts';
 
 let successfulDrops = 0;
 let failedDrops = 0;
 
-type DropIndexConfig = {
-    bucketName: string;
-    indexName: string;
-};
-
 export async function getIndexesToDrop(): Promise<DropIndexConfig[]> {
     const cluster = await getCluster();
-    const query: string = `
-        SELECT 
-  (SELECT i_inner.name, i_inner.keyspace_id, i_inner.\`namespace\`, i_inner.namespace_id, i_inner.state
-  FROM system:indexes AS i_inner
-  WHERE i_inner.metadata.last_scan_time IS NULL AND ANY v IN ["travel-sample"] SATISFIES i_inner.keyspace_id LIKE v || "%" END) as last_scan_null,
-  COUNT(*) AS total
-FROM system:indexes AS i
-WHERE i.metadata.last_scan_time IS NULL AND ANY v IN ["travel-sample"] SATISFIES i.keyspace_id LIKE v || "%" END;
-    `;
-    let result: QueryResult = await cluster.query(query);
+    console.log("\nSelect Index To Drop Index...");
+    let result: QueryResult = await cluster.query(n1qlIndexesToDrop);
     console.log(JSON.stringify(result, null, 2));
 
     const dropIndexConfigs: DropIndexConfig[] = [];
