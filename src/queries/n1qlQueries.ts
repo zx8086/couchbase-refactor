@@ -99,3 +99,9 @@ SELECT
 t.*
 FROM system:indexes t;
 `;
+
+export const n1qlCompletedRequestsLastWeek: string = `
+SELECT *, meta().plan FROM system:completed_requests
+WHERE requestTime >= DATE_ADD_STR(NOW_STR(), -168, 'hour')
+ORDER BY elapsedTime DESC
+`;
