@@ -5,6 +5,8 @@ This is to aid in refactoring Couchbase for the Cost Reduction plan - 30%
 This application does the following:-
 
 - Ping Cluster
+- Query for Completed Requests in Last Week
+- Query for Prepared Statements
 - Query for queries with Fatal Errors
 - Query for Longest Running Queries
 - Query for Most Frequent Running Queries
