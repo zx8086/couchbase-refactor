@@ -1,17 +1,17 @@
-import type { QueryResult } from 'couchbase';
+import type {Cluster, QueryResult} from 'couchbase';
 import { getCluster } from './clusterProvider.ts';
 import { mkdir } from 'node:fs/promises';
 import path from 'path';
 
-export async function queryCapella(query: string, logToFile: boolean = false, fileName: string = 'results.txt'): Promise<void> {
+export async function queryCapella(query: string, logToFile: boolean = false, fileName: string = 'queryResults.txt'): Promise<void> {
     try {
-        const cluster = await getCluster();
+        const cluster: Cluster = await getCluster();
         const result: QueryResult = await cluster.query(query);
-        const jsonStringResult = JSON.stringify(result, null, 2);
+        const jsonStringResult: string = JSON.stringify(result, null, 2);
         console.log(jsonStringResult);
 
         if (logToFile) {
-            const directory = 'src/query_results';
+            const directory: string = 'src/query_results';
             await mkdir(directory, { recursive: true });
 
             const destFile = Bun.file(path.join(directory, fileName));
