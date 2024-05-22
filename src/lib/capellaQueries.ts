@@ -22,3 +22,4 @@ export async function queryCapella(query: string, logToFile: boolean = false, fi
         console.error('Query Error:', error);
     }
 }
+
