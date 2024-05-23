@@ -3,7 +3,18 @@ import { queryCapella } from './src/lib/capellaQueries.ts';
 import { getIndexesToDrop, dropIndices } from './src/lib/indexOperations.ts';
 import type { DropIndexConfig } from './src/lib/interfaces.ts';
 
-import { n1qlQueryFatalRequests, n1qlLongestRunningQueries, n1qlMostFrequentQueries, n1qlLargestResultSizeQueries, n1qlLargestResultCountQueries, n1qlPrimaryIndexes, n1qlSystemIndexes, n1qlCompletedRequests, n1qlPreparedStatements } from './src/queries/n1qlQueries.ts';
+import {
+    n1qlQueryFatalRequests,
+    n1qlLongestRunningQueries,
+    n1qlMostFrequentQueries,
+    n1qlLargestResultSizeQueries,
+    n1qlLargestResultCountQueries,
+    n1qlPrimaryIndexes,
+    n1qlSystemIndexes,
+    n1qlCompletedRequests,
+    n1qlPreparedStatements,
+    mostExpensiveQueries
+} from './src/queries/n1qlQueries.ts';
 
 let successfulDrops = 0;
 let failedDrops = 0;
@@ -36,6 +47,9 @@ async function main() :Promise<void> {
 
         console.log("\nQuery Largest Result Counts...");
         await queryCapella(n1qlLargestResultCountQueries, true, 'largestResultCountQueries.txt');
+
+        console.log("\nQuery Most Expensive Queries...");
+        await queryCapella(mostExpensiveQueries, true, 'mostExpensiveQueries.txt');
 
         console.log("\nQuery PRIMARY Indexes...");
         await queryCapella(n1qlPrimaryIndexes, true, 'primaryIndexes.txt');
