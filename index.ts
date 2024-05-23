@@ -65,7 +65,7 @@ async function main() :Promise<void> {
         console.log(`\nSuccessful Index Deletions: ${successfulDrops}`);
         console.log(`Failed Index Deletions: ${failedDrops}`);
         console.log(`Total Attempted Deletions: ${successfulDrops + failedDrops}`);
-        console.log("\nExiting...");
+        console.log("\nExiting program...");
         process.exit(0);
     }
 }
