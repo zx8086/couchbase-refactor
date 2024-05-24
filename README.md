@@ -7,11 +7,12 @@ This application does the following:-
 - Ping Cluster
 - Query for Completed Requests in Last Week
 - Query for Prepared Statements
-- Query for queries with Fatal Errors
+- Query for Fatal Errors
 - Query for Longest Running Queries
 - Query for Most Frequent Running Queries
 - Query for Largest Result Size Queries
-- Query for Largest Result Count Queries
+- Query for Largest Result Count 
+- Query foe Most Expensive Queries
 - Query for Primary Index
 - Query for All Indexes
 
