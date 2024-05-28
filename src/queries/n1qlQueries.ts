@@ -126,10 +126,10 @@ export const n1qlIndexesToDrop: string = `
 SELECT 
   (SELECT i_inner.name, i_inner.keyspace_id, i_inner.\`namespace\`, i_inner.namespace_id, i_inner.state
   FROM system:indexes AS i_inner
-  WHERE i_inner.metadata.last_scan_time IS NULL AND ANY v IN ["travel-sample"] SATISFIES i_inner.keyspace_id LIKE v || "%" END) as last_scan_null,
+  WHERE i_inner.metadata.last_scan_time IS NULL AND ANY v IN ["default", "prices"] SATISFIES i_inner.keyspace_id LIKE v || "%" END) as last_scan_null,
   COUNT(*) AS total
 FROM system:indexes AS i
-WHERE i.metadata.last_scan_time IS NULL AND ANY v IN ["travel-sample"] SATISFIES i.keyspace_id LIKE v || "%" END;`;
+WHERE i.metadata.last_scan_time IS NULL AND ANY v IN ["default", "prices"] SATISFIES i.keyspace_id LIKE v || "%" END;`;
 
 export const mostExpensiveQueries: string = `
 SELECT
