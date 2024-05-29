@@ -38,15 +38,14 @@ export const n1qlQueryFatalRequests: string = `
 
 export const n1qlLongestRunningQueries: string = `
 SELECT statement,
-    DURATION_TO_STR(avgServiceTime) AS avgServiceTime,
-    COUNT(1) AS queries
+    MILLIS_TO_STR(AVG(serviceTime)) AS avgServiceTime,
+COUNT(1) AS queries
 FROM system:completed_requests
 WHERE UPPER(statement) NOT LIKE 'INFER %'
-    AND UPPER(statement) NOT LIKE 'CREATE INDEX%'
-    AND UPPER(statement) NOT LIKE '% SYSTEM:%'
+AND UPPER(statement) NOT LIKE 'CREATE INDEX%'
+AND UPPER(statement) NOT LIKE '% SYSTEM:%'
 GROUP BY statement
-LETTING avgServiceTime = AVG(STR_TO_DURATION(serviceTime))
-ORDER BY avgServiceTime DESC;
+ORDER BY AVG(serviceTime) DESC;
 `;
 
 export const n1qlMostFrequentQueries: string = `
