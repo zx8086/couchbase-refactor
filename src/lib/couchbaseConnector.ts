@@ -1,6 +1,6 @@
 // src/lib/couchbaseConnector.ts
 import config from '../../config.ts';
-import { connect as couchbaseConnect } from 'couchbase'; // Regular import for the function used at runtime
+import { connect } from 'couchbase'; // Regular import for the function used at runtime
 import type { Cluster, Bucket, Scope, Collection } from 'couchbase';  // Type-only imports
 
 // Define the interface for the connection details
@@ -9,7 +9,7 @@ export interface CouchbaseConnection {
     bucket: Bucket;
     scope: Scope;
     collection: Collection;
-    connect: typeof couchbaseConnect;
+    connect: typeof connect;
 }
 
 // Connection function using the defined interface
@@ -32,7 +32,7 @@ export async function connectToCouchbase(): Promise<CouchbaseConnection> {
                     Scope: ${scopeName}, 
                     Collection: ${collectionName}`);
 
-        const cluster: Cluster = await couchbaseConnect(clusterConnStr, {
+        const cluster: Cluster = await connect(clusterConnStr, {
             username: username,
             password: password
         });
@@ -46,7 +46,7 @@ export async function connectToCouchbase(): Promise<CouchbaseConnection> {
         const collection: Collection = scope.collection(collectionName);
         console.log(`Collection ${collectionName} accessed under scope ${scopeName}.`);
 
-        return { cluster, bucket, scope, collection, connect: couchbaseConnect };
+        return { cluster, bucket, scope, collection, connect: connect };
     } catch (error) {
 
         console.error("Couchbase connection failed:", error);
