@@ -36,6 +36,19 @@ export const n1qlQueryFatalRequests: string = `
     ORDER BY requestTime DESC;
 `;
 
+export const listDocumentTypeExampleKeys: string = `
+SELECT d.documentType, MIN(META(d).id) AS documentKey
+FROM default._default._default AS d
+WHERE d.documentType IN [
+    "account", "accountlist", "availability", "brand", "customer", 
+    "customerstatistics", "distributionCurve", "division", "homeofproduct", 
+    "image", "look", "option", "order", "prepack", "presentation", 
+    "price", "priceFMS", "salesorganization", "season", "seasonFMS", 
+    "showroom", "showroomconfig", "style", "trend", "user"
+]
+GROUP BY d.documentType;
+`;
+
 export const n1qlLongestRunningQueries: string = `
 SELECT statement,
     DURATION_TO_STR(avgServiceTime) AS avgServiceTime,
