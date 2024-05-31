@@ -13,7 +13,7 @@ import {
     n1qlSystemIndexes,
     n1qlCompletedRequests,
     n1qlPreparedStatements,
-    mostExpensiveQueries
+    mostExpensiveQueries, listDocumentTypeExampleKeys
 } from './src/queries/n1qlQueries.ts';
 
 let successfulDrops = 0;
@@ -26,6 +26,9 @@ async function main() :Promise<void> {
 
         console.log("\nPinging cluster...");
         await pingCluster();
+
+        console.log("\nQuery Completed Request...");
+        await queryCapella(listDocumentTypeExampleKeys, true, 'documentTypeExamples.txt');
 
         console.log("\nQuery Completed Request...");
         await queryCapella(n1qlCompletedRequests, true, 'completedRequests.txt');
